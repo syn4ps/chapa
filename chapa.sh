@@ -43,8 +43,8 @@ startchecks () {
         echo "Firststart detected creating workpath directories"
         mkdir $workpath $tmpdir $preplotdir > /dev/null 2>&1
 	touch $workpath/fingerprint.txt > /dev/null 2>&1
+        if [ -d "$workpath" ]; then echo "Workpath created at ${workpath}"; fi
     fi
-    if [ -d "$workpath" ]; then echo "Workpath created at ${workpath}"; fi
     if [ ! -s "$workpath/fingerprint.txt" ]
     then 
 	echo ""
@@ -52,7 +52,7 @@ startchecks () {
 	echo "you can find fingerprint by running chia show keys in chia cli"
 	exit 6
     else
-	fingerprint=$(cat $workdir/fingerprint.txt)
+	fingerprint=$(cat $workpath/fingerprint.txt)
     fi
 
 
@@ -86,7 +86,7 @@ case "$1" in
 	sleep 5
 	plotterpid=$(pidof -x -s chia)
 	runthreads=$(ps H -p "${plotterpid}"  | grep "${plotterpid}" | wc -l)
-	if [ $runthreads > 0 ]
+	if [ $runthreads -gt 0 ]
 	then
 	    echo "Started plot ${i} in queue ${2}, process pid is ${plotterpid}"
 	    status="running"
